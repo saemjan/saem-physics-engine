@@ -1,2 +1,2 @@
-VideoID,Title,Formula
-01,Gauss Law for Electric Flux,\oint \vec{E} \cdot d\vec{A} = \frac{q_{enclosed}}{\epsilon_0}
+VideoID,Title,Formula,Highlight,Script
+01,Gauss Law for Electric Flux,\oint \vec{E} \cdot d\vec{A} = \frac{q_{enclosed}}{\epsilon_0},q_{enclosed},Physics padh lo yaar! Aaj hum Gauss law ka asli funda samjhenge. Notice how the electric flux only depends on the enclosed charge inside the Gaussian surface.
