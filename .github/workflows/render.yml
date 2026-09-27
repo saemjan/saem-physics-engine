@@ -14,11 +14,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
       
-      - name: Install System Dependencies (LaTeX & FFmpeg)
+      - name: Install System Dependencies (LaTeX & Manim Libs)
         run: |
           sudo apt update
-          sudo apt install -y ffmpeg texlive texlive-latex-extra texlive-fonts-extra texlive-latex-recommended texlive-science
-      
+          sudo apt install -y libcairo2-dev libpango1.0-dev ffmpeg texlive texlive-latex-extra texlive-fonts-extra texlive-latex-recommended texlive-science
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
