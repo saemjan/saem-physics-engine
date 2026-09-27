@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Install System Dependencies (LaTeX & FFmpeg)
         run: |
@@ -31,7 +31,7 @@ jobs:
         run: manim -qh render_physics.py PhysicsShort
         
       - name: Upload Finished MP4 to Mobile
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: SaemPhysics-Render
           path: media/videos/render_physics/1080p60/PhysicsShort.mp4
