@@ -1,2 +1,2 @@
 VideoID,Title,Formula,Highlight,Script
-01,Gauss Law for Electric Flux,\oint \vec{E} \cdot d\vec{A} = \frac{q_{enclosed}}{\epsilon_0},q_{enclosed},Physics padh lo yaar! Aaj hum Gauss law ka asli funda samjhenge. Notice how the electric flux only depends on the enclosed charge inside the Gaussian surface.
+02,Maxwell's Displacement Current,\oint \vec{B} \cdot d\vec{l} = \mu_0 I_c + \mu_0 \epsilon_0 \frac{d\Phi_E}{dt},\frac{d\Phi_E}{dt},Physics padh lo yaar! Aaj hum samjhenge Maxwell ka sabse bada game changer Displacement Current. Jab capacitor charge hota hai toh plates ke beech magnetic field kahan se aati hai? Wahan toh wire hai hi nahi! Asal mein yeh changing electric flux ka jaadu hai jo magnetic field banata hai. Yehi deep concepts IIT clear karwate hain.
