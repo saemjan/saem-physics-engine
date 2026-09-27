@@ -41,14 +41,12 @@ jobs:
           VIDEO_PATH=$(find media/videos -type f -name "VerticalPhysics.mp4" | head -n 1)
           cp "$VIDEO_PATH" raw_video.mp4
           
-          # 2. Snap a high-quality thumbnail at the 2-second mark
-          ffmpeg -ss 00:00:02 -i raw_video.mp4 -vframes 1 thumb.png
+          # 2. Snap thumbnail at 5s when the full equation is fully rendered
+          ffmpeg -ss 00:00:05 -i raw_video.mp4 -vframes 1 thumb.png -y
           
-          # 3. Create the 440Hz studio pad and mix with the AI voice
-          ffmpeg -f lavfi -i "sine=frequency=440:duration=10" -i voiceover.mp3 -filter_complex "[0:a]volume=0.08[ambient];[1:a]volume=1.5[voice];[ambient][voice]amix=inputs=2:duration=shortest[aout]" -map "[aout]" mixed_audio.aac
-          
-          # 4. Attach the final mixed audio to the video
-          ffmpeg -i raw_video.mp4 -i mixed_audio.aac -c:v copy -c:a aac -shortest Final_Short.mp4
+          # 3. Attach pure voiceover (no background music)
+          ffmpeg -i raw_video.mp4 -i voiceover.mp3 -c:v copy -c:a aac -shortest Final_Short.mp4 -y
+
           
       - name: Upload Final Video & Thumbnail to Mobile
         uses: actions/upload-artifact@v4
