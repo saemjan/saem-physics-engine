@@ -1,6 +1,5 @@
-name: Render Physics Video
+name: Render Physics Shorts
 
-# This triggers the factory whenever you update the CSV file
 on:
   push:
     paths:
@@ -8,30 +7,44 @@ on:
   workflow_dispatch: 
 
 jobs:
-  build-video:
+  build-shorts:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
       
-      - name: Install System Dependencies (LaTeX & Manim Libs)
+      - name: Install System Dependencies
         run: |
           sudo apt update
           sudo apt install -y libcairo2-dev libpango1.0-dev ffmpeg texlive texlive-latex-extra texlive-fonts-extra texlive-latex-recommended texlive-science
-
+      
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
           
-      - name: Install Manim Engine
-        run: pip install manim pandas
+      - name: Install Python Tools (Manim, TTS, Pandas)
+        run: pip install manim pandas edge-tts
           
-      - name: Render the Video (High Quality)
-        run: manim -qh render_physics.py PhysicsShort
+      - name: Generate AI Voiceover & Extract Script
+        run: |
+          # Extract just the script column from CSV and generate audio
+          SCRIPT=$(awk -F',' 'NR==2 {print $5}' content_batch.csv)
+          edge-tts --text "$SCRIPT" --voice en-IN-PrabhatNeural --write-media voiceover.mp3
+          
+      - name: Render Vertical Manim Video & Thumbnail
+        run: manim -qh --format=mp4 --save_last_frame render_pyq.py VerticalPhysics
         
-      - name: Upload Finished MP4 to Mobile
+      - name: Mix Audio and Video (Final Output)
+        run: |
+          # Create a subtle 440Hz pad, mix with voice, and merge with video
+          ffmpeg -f lavfi -i "sine=frequency=440:duration=10" -i voiceover.mp3 -filter_complex "[0:a]volume=0.08[ambient];[1:a]volume=1.5[voice];[ambient][voice]amix=inputs=2:duration=shortest[aout]" -map "[aout]" mixed_audio.aac
+          ffmpeg -i media/videos/render_pyq/1080p60/VerticalPhysics.mp4 -i mixed_audio.aac -c:v copy -c:a aac -shortest Final_Short.mp4
+        
+      - name: Upload Final Video & Thumbnail to Mobile
         uses: actions/upload-artifact@v4
         with:
-          name: SaemPhysics-Render
-          path: media/videos/render_physics/1080p60/PhysicsShort.mp4
+          name: SaemPhysics-Shorts-Package
+          path: |
+            Final_Short.mp4
+            media/images/render_pyq/VerticalPhysics.png
