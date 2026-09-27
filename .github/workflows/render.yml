@@ -32,25 +32,24 @@ jobs:
           SCRIPT=$(awk -F',' 'NR==2 {print $5}' content_batch.csv)
           edge-tts --text "$SCRIPT" --voice en-IN-PrabhatNeural --write-media voiceover.mp3
           
-      - name: Render Vertical Manim Video & Thumbnail
-        run: manim -qh --format=mp4 --save_last_frame render_pyq.py VerticalPhysics
+      - name: Render Vertical Manim Video
+        run: manim -qh render_pyq.py VerticalPhysics
         
       - name: Mix Audio and Video (Final Output)
         run: |
-          # 1. Find the exact video and image files automatically
+          # 1. Find the video automatically
           VIDEO_PATH=$(find media/videos -type f -name "VerticalPhysics.mp4" | head -n 1)
-          IMAGE_PATH=$(find media/images -type f -name "VerticalPhysics.png" | head -n 1)
-          
-          # 2. Copy them to the main directory
           cp "$VIDEO_PATH" raw_video.mp4
-          cp "$IMAGE_PATH" thumb.png
+          
+          # 2. Snap a high-quality thumbnail at the 2-second mark
+          ffmpeg -ss 00:00:02 -i raw_video.mp4 -vframes 1 thumb.png
           
           # 3. Create the 440Hz studio pad and mix with the AI voice
           ffmpeg -f lavfi -i "sine=frequency=440:duration=10" -i voiceover.mp3 -filter_complex "[0:a]volume=0.08[ambient];[1:a]volume=1.5[voice];[ambient][voice]amix=inputs=2:duration=shortest[aout]" -map "[aout]" mixed_audio.aac
           
           # 4. Attach the final mixed audio to the video
           ffmpeg -i raw_video.mp4 -i mixed_audio.aac -c:v copy -c:a aac -shortest Final_Short.mp4
-        
+          
       - name: Upload Final Video & Thumbnail to Mobile
         uses: actions/upload-artifact@v4
         with:
@@ -58,4 +57,3 @@ jobs:
           path: |
             Final_Short.mp4
             thumb.png
-
