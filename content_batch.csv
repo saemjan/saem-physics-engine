@@ -1,0 +1,2 @@
+VideoID,Title,Formula
+01,Gauss Law for Electric Flux,\oint \vec{E} \cdot d\vec{A} = \frac{q_{enclosed}}{\epsilon_0}
